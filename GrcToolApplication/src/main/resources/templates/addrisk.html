@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Add Risk Page</title>
+<link rel="stylesheet"
+	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="styles.css">
+<style>
+/* Additional styles for this page */
+body {
+	font-family: 'Arial', sans-serif;
+	background-color: #f4f4f4;
+	margin: 0;
+	padding: 0;
+}
+
+.container {
+	max-width: 900px;
+	margin: 0 auto;
+	padding: 1rem;
+	position: relative; /* For positioning the search button */
+}
+
+h1 {
+	text-align: center;
+	color: #009900;
+}
+
+form {
+	display: flex;
+	align-items: center;
+	gap: 1rem;
+	margin-bottom: 2rem;
+}
+
+form label {
+	font-size: 1rem;
+	font-weight: bold;
+	margin-right: 0.5rem;
+}
+
+form input[type="text"] {
+	flex: 1;
+	padding: 0.5rem;
+	font-size: 1rem;
+}
+
+button {
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	background-color: #009900;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+button:hover {
+	background-color: #007700;
+}
+
+.search-container {
+	position: absolute;
+	top: 9rem;
+	right: 1rem;
+}
+
+.search-container input[type="text"] {
+	padding: 0.5rem;
+	font-size: 1rem;
+	margin-right: 0.5rem;
+	
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	margin-top: 4rem;
+}
+
+table, th, td {
+	border: 1px solid #ddd;
+}
+
+th, td {
+	padding: 0.75rem;
+	text-align: left;
+}
+
+th {
+	background-color: #333;
+	color: white;
+}
+
+td {
+	background-color: #f9f9f9;
+}
+
+.pagination {
+	text-align: center;
+	margin-top: 1rem;
+}
+
+.pagination button {
+	padding: 0.5rem 1rem;
+	font-size: 1rem;
+	margin: 0 0.5rem;
+	background-color: #009900;
+	color: white;
+	border: none;
+	cursor: pointer;
+}
+
+.pagination button:hover {
+	background-color: #007700;
+}
+</style>
+</head>
+<body>
+	<header th:include="navbar :: navbar"></header>
+	<div class="container">
+		<h1>Add Risk And Details Of Risk</h1>
+		
+	<form action="/add-risk" method="POST">
+    <label for="riskTitle">Add Title:</label>
+    <input type="text" id="riskTitle" name="title" placeholder="Risk Title" required>
+    
+    <label for="riskDescription">Add Description:</label>
+    <input type="text" id="riskDescription" name="description" placeholder="Risk Description" required>
+    
+    <button type="submit">Add Risk</button>
+</form>
+
+
+		<!-- Search functionality -->
+		<div class="search-container">
+			<input type="text" id="searchInput"
+				placeholder="Search by title or description" oninput="searchRisks()">
+			<button onclick="searchRisks()">
+				<i class="fa fa-search"></i>
+			</button>
+		</div>
+
+		<!-- Table to display risks -->
+		<table id="riskTable">
+			<thead>
+				<tr>
+					<th>Title</th>
+					<th>Description</th>
+				</tr>
+			</thead>
+			<tbody id="riskTableBody">
+				<tr th:each="risk : ${risk}">
+					<td th:text="${risk.title}"></td>
+					<td th:text="${risk.description}"></td>
+				</tr>
+			</tbody>
+		</table>
+
+		<!-- Pagination controls -->
+		<div class="pagination">
+			<button id="prevBtn" onclick="changePage(-1)">Previous</button>
+			<button id="nextBtn" onclick="changePage(1)">Next</button>
+		</div>
+	</div>
+
+	<!-- JavaScript to handle form submission, search, and pagination -->
+	<script>
+   
+        let currentPage = 1;
+        const rowsPerPage = 5;
+        let allRows = [];
+        let filteredRows = [];
+
+        function fetchRows() {
+            const tableBody = document.getElementById('riskTableBody');
+            allRows = Array.from(tableBody.getElementsByTagName('tr'));
+            filteredRows = [...allRows]; // Start with all rows as filtered
+            paginate(filteredRows);
+        }
+
+        function paginate(rows) {
+            const table = document.getElementById('riskTableBody');
+            const totalRows = rows.length;
+
+            // Clear existing rows
+            table.innerHTML = '';
+
+            // Display the rows for the current page
+            const startIndex = (currentPage - 1) * rowsPerPage;
+            const endIndex = Math.min(startIndex + rowsPerPage, totalRows);
+
+            for (let i = startIndex; i < endIndex; i++) {
+                table.appendChild(rows[i]);
+            }
+
+            // Disable/enable pagination buttons
+            document.getElementById('prevBtn').disabled = currentPage === 1;
+            document.getElementById('nextBtn').disabled = endIndex >= totalRows;
+        }
+
+        function changePage(direction) {
+            const totalPages = Math.ceil(filteredRows.length / rowsPerPage);
+            const newPage = currentPage + direction;
+            if (newPage > 0 && newPage <= totalPages) {
+                currentPage = newPage;
+                paginate(filteredRows);
+            }
+        }
+
+        function searchRisks() {
+            const input = document.getElementById('searchInput').value.toLowerCase();
+            filteredRows = allRows.filter(row => {
+                const title = row.cells[0].textContent.toLowerCase();
+                const description = row.cells[1].textContent.toLowerCase();
+                return title.includes(input) || description.includes(input);
+            });
+
+            currentPage = 1; // Reset to first page after search
+            paginate(filteredRows);
+        }
+
+        // Initialize with all rows
+        fetchRows(); // Load and paginate all rows initially
+    </script>
+</body>
+</html>

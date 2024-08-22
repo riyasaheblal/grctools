@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Navbar</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+ <header th:fragment="navbar">
+    <nav>
+        <ul>
+            <li><a th:href="@{/}">Home</a></li>
+            <li><a th:href="@{/addrisk}">Add Risk</a></li>
+            <li><a th:href="@{/addcompliance}">Add Compliance</a></li>
+            
+        </ul>
+    </nav>
+
+    <footer>
+        <p>&copy; 2024 Your Company Name. All rights reserved.</p>
+        <p><a href="privacy.html">Privacy Policy</a> | <a href="terms.html">Terms of Service</a></p>
+    </footer>
+    </header>
+</body>
+</html>

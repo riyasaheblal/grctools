@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>GRC Tool</title>
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <h1>GRC Tool</h1>
+    <h2>Risks</h2>
+    <ul>
+        <li th:each="risk : ${risks}">
+            <span th:text="${risk.title}">Risk Title</span>: 
+            <span th:text="${risk.description}">Risk Description</span>
+        </li>
+    </ul>
+    <h2>Add Risk</h2>
+    <form action="/add-risk" method="post">
+        <input type="text" name="title" placeholder="Risk Title" required>
+        <input type="text" name="description" placeholder="Risk Description" required>
+        <button type="submit">Add Risk</button>
+    </form>
+
+    <h2>Compliance</h2>
+    <ul>
+        <li th:each="compliance : ${compliances}">
+            <span th:text="${compliance.title}">Compliance Title</span>: 
+            <span th:text="${compliance.description}">Compliance Description</span>
+        </li>
+    </ul>
+    <h2>Add Compliance</h2>
+    <form action="/add-compliance" method="post">
+        <input type="text" name="title" placeholder="Compliance Title" required>
+        <input type="text" name="description" placeholder="Compliance Description" required>
+        <button type="submit">Add Compliance</button>
+    </form>
+</body>
+</html>
